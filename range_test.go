@@ -387,3 +387,27 @@ func TestRangeZip(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkRangeDivisorsSearch(b *testing.B) {
+	b.Run("with a loop", func(b *testing.B) {
+		for k := 0; k < b.N; k++ {
+			func() {
+				results := []int{}
+				for i := 0; i < 1_000_000; i++ {
+					if i%14 == 0 {
+						results = append(results, i)
+					}
+				}
+			}()
+		}
+	})
+
+	b.Run("with a range", func(b *testing.B) {
+		for k := 0; k < b.N; k++ {
+			Range(0, 1_000_000, 1).Filter(func(item interface{}) bool {
+				return item.(int)%14 == 0
+			}).Collect()
+		}
+	})
+
+}
