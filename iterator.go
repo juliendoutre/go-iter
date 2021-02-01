@@ -29,24 +29,22 @@ func (i *Iterator) Fold(init interface{}, reducer func(acc, item interface{}) in
 	return acc
 }
 
-// TryFold folds over the Iterator and stops if it reaches the end of the Iterator or got a Break ControlFlow.
-func (i *Iterator) TryFold(init interface{}, reducer func(acc, item interface{}) ControlFlow) ControlFlow {
+// TryFold folds over the Iterator and stops if it reaches the end of the Iterator or got a Break (bool, interface{}).
+func (i *Iterator) TryFold(init interface{}, reducer func(acc, item interface{}) (interface{}, bool)) (interface{}, bool) {
 	acc := init
 
 	item := i.Next()
 	for item != nil {
-		r := reducer(acc, item)
-
-		if r.ShouldBreak() {
-			return r
+		r, ok := reducer(acc, item)
+		if !ok {
+			return r, ok
 		}
 
-		acc = r.Unwrap()
-
+		acc = r
 		item = i.Next()
 	}
 
-	return Continue(acc)
+	return acc, true
 }
 
 // FoldFirst folds over the Iterator, using its first element as the accumulator initial value.
@@ -122,58 +120,48 @@ func (i *Iterator) Collect() []interface{} {
 
 // All checks if all the elements of the Iterator validates a predicate.
 func (i *Iterator) All(predicate func(item interface{}) bool) bool {
-	return i.TryFold(nil, func(acc, item interface{}) ControlFlow {
-		if predicate(item) {
-			return Continue(nil)
-		}
-
-		return Break(nil)
-	}).ShouldContinue()
+	_, ok := i.TryFold(nil, func(acc, item interface{}) (interface{}, bool) {
+		return nil, predicate(item)
+	})
+	return ok
 }
 
 // Any checks if at least one element of the Iterator validates a predicate.
 func (i *Iterator) Any(predicate func(item interface{}) bool) bool {
-	return i.TryFold(nil, func(acc, item interface{}) ControlFlow {
-		if predicate(item) {
-			return Break(nil)
-		}
-
-		return Continue(nil)
-	}).ShouldBreak()
+	_, ok := i.TryFold(nil, func(acc, item interface{}) (interface{}, bool) {
+		return nil, !predicate(item)
+	})
+	return !ok
 }
 
 // Find returns the first element of the Iterator that validates a predicate.
 func (i *Iterator) Find(predicate func(item interface{}) bool) interface{} {
-	result := i.TryFold(nil, func(acc, item interface{}) ControlFlow {
-		if predicate(item) {
-			return Break(item)
-		}
-
-		return Continue(nil)
+	r, ok := i.TryFold(nil, func(acc, item interface{}) (interface{}, bool) {
+		return item, !predicate(item)
 	})
 
-	if result.ShouldContinue() {
+	if ok {
 		return nil
 	}
 
-	return result.Unwrap()
+	return r
 }
 
 // Position returns the position of the first element of the Iterator that validates a predicate.
 func (i *Iterator) Position(predicate func(item interface{}) bool) interface{} {
-	result := i.TryFold(uint(0), func(acc, item interface{}) ControlFlow {
+	r, ok := i.TryFold(uint(0), func(acc, item interface{}) (interface{}, bool) {
 		if predicate(item) {
-			return Break(acc)
+			return acc, false
 		}
 
-		return Continue(acc.(uint) + 1)
+		return acc.(uint) + 1, true
 	})
 
-	if result.ShouldContinue() {
+	if ok {
 		return nil
 	}
 
-	return result.Unwrap()
+	return r
 }
 
 // SkipWhile skips the next elements until it reaches one which validates predicate.
