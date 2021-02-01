@@ -1,7 +1,7 @@
 package iter
 
 type mapIterable struct {
-	iter   *Iterator
+	iter   Iterable
 	mapper func(item interface{}) interface{}
 }
 
@@ -23,7 +23,7 @@ type Enumeration struct {
 }
 
 type enumerate struct {
-	iter  *Iterator
+	iter  Iterable
 	index uint
 }
 
@@ -41,8 +41,8 @@ func (e *enumerate) Next() interface{} {
 var _ Iterable = &enumerate{}
 
 type chain struct {
-	first  *Iterator
-	second *Iterator
+	first  Iterable
+	second Iterable
 	flag   bool
 }
 
@@ -80,8 +80,8 @@ type Pair struct {
 }
 
 type zip struct {
-	first  *Iterator
-	second *Iterator
+	first  Iterable
+	second Iterable
 }
 
 func (z *zip) Next() interface{} {
@@ -101,7 +101,7 @@ func (z *zip) Next() interface{} {
 var _ Iterable = &zip{}
 
 type takeWhile struct {
-	iter      *Iterator
+	iter      Iterable
 	predicate func(item interface{}) bool
 	flag      bool
 }
@@ -128,7 +128,7 @@ func (t *takeWhile) Next() interface{} {
 var _ Iterable = &takeWhile{}
 
 type take struct {
-	iter  *Iterator
+	iter  Iterable
 	max   uint
 	count uint
 	flag  bool

@@ -181,12 +181,12 @@ func (i *Iterator) Skip(n uint) *Iterator {
 
 // Map returns a new Iterator applying a mapper function to every element.
 func (i *Iterator) Map(mapper func(item interface{}) interface{}) *Iterator {
-	return &Iterator{iter: &mapIterable{mapper: mapper, iter: i}}
+	return &Iterator{iter: &mapIterable{mapper: mapper, iter: i.iter}}
 }
 
 // Chain returns a new Iterator sequentially joining the two it was built on.
 func (i *Iterator) Chain(iter *Iterator) *Iterator {
-	return &Iterator{iter: &chain{first: i, second: iter, flag: false}}
+	return &Iterator{iter: &chain{first: i.iter, second: iter.iter, flag: false}}
 }
 
 // Filter returns a new Iterator yielding only elements validating a predicate.
@@ -196,22 +196,22 @@ func (i *Iterator) Filter(predicate func(item interface{}) bool) *Iterator {
 
 // Enumerate returns a new Iterator yielding elements and their indices.
 func (i *Iterator) Enumerate() *Iterator {
-	return &Iterator{iter: &enumerate{iter: i}}
+	return &Iterator{iter: &enumerate{iter: i.iter}}
 }
 
 // Zip returns a new Iterator yielding pairs of elements of the two Iterators it was built from.
 func (i *Iterator) Zip(iter *Iterator) *Iterator {
-	return &Iterator{iter: &zip{first: i, second: iter}}
+	return &Iterator{iter: &zip{first: i.iter, second: iter.iter}}
 }
 
 // TakeWhile returns a new Iterator yielding elements until predicate becomes false.
 func (i *Iterator) TakeWhile(predicate func(item interface{}) bool) *Iterator {
-	return &Iterator{iter: &takeWhile{iter: i, predicate: predicate, flag: false}}
+	return &Iterator{iter: &takeWhile{iter: i.iter, predicate: predicate, flag: false}}
 }
 
 // Take returns a new Iterator yielding only the n next elements.
 func (i *Iterator) Take(n uint) *Iterator {
-	return &Iterator{iter: &take{iter: i, count: 0, max: n, flag: false}}
+	return &Iterator{iter: &take{iter: i.iter, count: 0, max: n, flag: false}}
 }
 
 var _ Iterable = &Iterator{}
