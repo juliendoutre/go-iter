@@ -12,12 +12,12 @@ type vector struct {
 	cursor uint
 }
 
-func (v *vector) Next() Option {
+func (v *vector) Next() interface{} {
 	if v.cursor >= uint(len(v.slice)) {
-		return None
+		return nil
 	}
 
-	item := Some(v.slice[v.cursor])
+	item := v.slice[v.cursor]
 	v.cursor++
 
 	return item

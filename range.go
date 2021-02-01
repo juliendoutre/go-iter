@@ -14,12 +14,12 @@ type rangeIterable struct {
 	step  int
 }
 
-func (r *rangeIterable) Next() Option {
+func (r *rangeIterable) Next() interface{} {
 	if (r.index-r.end)*r.step >= 0 {
-		return None
+		return nil
 	}
 
-	item := Some(r.index)
+	item := r.index
 	r.index += r.step
 
 	return item

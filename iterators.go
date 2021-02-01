@@ -5,13 +5,13 @@ type mapIterable struct {
 	mapper func(item interface{}) interface{}
 }
 
-func (m *mapIterable) Next() Option {
+func (m *mapIterable) Next() interface{} {
 	item := m.iter.Next()
-	if item.IsNone() {
-		return None
+	if item == nil {
+		return nil
 	}
 
-	return Some(m.mapper(item.Unwrap()))
+	return m.mapper(item)
 }
 
 var _ Iterable = &mapIterable{}
@@ -27,13 +27,13 @@ type enumerate struct {
 	index uint
 }
 
-func (e *enumerate) Next() Option {
+func (e *enumerate) Next() interface{} {
 	item := e.iter.Next()
-	if item.IsNone() {
-		return None
+	if item == nil {
+		return nil
 	}
 
-	o := Some(Enumeration{Index: e.index, Element: item.Unwrap()})
+	o := Enumeration{Index: e.index, Element: item}
 	e.index++
 	return o
 }
@@ -46,13 +46,13 @@ type chain struct {
 	flag   bool
 }
 
-func (c *chain) Next() Option {
+func (c *chain) Next() interface{} {
 	if c.flag {
 		return c.second.Next()
 	}
 
 	item := c.first.Next()
-	if item.IsNone() {
+	if item == nil {
 		c.flag = true
 		return c.second.Next()
 	}
@@ -67,7 +67,7 @@ type filter struct {
 	predicate func(item interface{}) bool
 }
 
-func (f *filter) Next() Option {
+func (f *filter) Next() interface{} {
 	return f.iter.Find(f.predicate)
 }
 
@@ -84,18 +84,18 @@ type zip struct {
 	second *Iterator
 }
 
-func (z *zip) Next() Option {
+func (z *zip) Next() interface{} {
 	f := z.first.Next()
-	if f.IsNone() {
-		return None
+	if f == nil {
+		return nil
 	}
 
 	s := z.second.Next()
-	if s.IsNone() {
-		return None
+	if s == nil {
+		return nil
 	}
 
-	return Some(Pair{First: f.Unwrap(), Second: s.Unwrap()})
+	return Pair{First: f, Second: s}
 }
 
 var _ Iterable = &zip{}
@@ -106,20 +106,20 @@ type takeWhile struct {
 	flag      bool
 }
 
-func (t *takeWhile) Next() Option {
+func (t *takeWhile) Next() interface{} {
 	if t.flag {
-		return None
+		return nil
 	}
 
 	item := t.iter.Next()
-	if item.IsNone() {
+	if item == nil {
 		t.flag = true
-		return None
+		return nil
 	}
 
-	if !t.predicate(item.Unwrap()) {
+	if !t.predicate(item) {
 		t.flag = true
-		return None
+		return nil
 	}
 
 	return item
@@ -134,20 +134,20 @@ type take struct {
 	flag  bool
 }
 
-func (t *take) Next() Option {
+func (t *take) Next() interface{} {
 	if t.flag {
-		return None
+		return nil
 	}
 
 	item := t.iter.Next()
-	if item.IsNone() {
+	if item == nil {
 		t.flag = true
-		return None
+		return nil
 	}
 
 	if t.count >= t.max {
 		t.flag = true
-		return None
+		return nil
 	}
 
 	t.count++

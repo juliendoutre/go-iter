@@ -27,13 +27,13 @@ func TestRangeFold(t *testing.T) {
 }
 
 func TestRangeFoldFirst(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Range(0, 0, 0):   None,
-		Range(0, 1, 1):   Some(0),
-		Range(0, 4, 1):   Some(6),
-		Range(0, 5, 2):   Some(6),
-		Range(0, -4, -1): Some(-6),
-		Range(0, -5, -2): Some(-6),
+	testCases := map[*Iterator]interface{}{
+		Range(0, 0, 0):   nil,
+		Range(0, 1, 1):   0,
+		Range(0, 4, 1):   6,
+		Range(0, 5, 2):   6,
+		Range(0, -4, -1): -6,
+		Range(0, -5, -2): -6,
 	}
 
 	for iter, want := range testCases {
@@ -110,13 +110,13 @@ func TestRangeCount(t *testing.T) {
 }
 
 func TestRangeLast(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Range(0, 0, 0):   None,
-		Range(0, 1, 1):   Some(0),
-		Range(0, 4, 1):   Some(3),
-		Range(0, 5, 2):   Some(4),
-		Range(0, -4, -1): Some(-3),
-		Range(0, -5, -2): Some(-4),
+	testCases := map[*Iterator]interface{}{
+		Range(0, 0, 0):   nil,
+		Range(0, 1, 1):   0,
+		Range(0, 4, 1):   3,
+		Range(0, 5, 2):   4,
+		Range(0, -4, -1): -3,
+		Range(0, -5, -2): -4,
 	}
 
 	for iter, want := range testCases {
@@ -129,13 +129,13 @@ func TestRangeLast(t *testing.T) {
 }
 
 func TestRangeNth(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Range(0, 0, 0):   None,
-		Range(0, 1, 1):   None,
-		Range(0, 4, 1):   Some(3),
-		Range(0, 5, 2):   None,
-		Range(0, -4, -1): Some(-3),
-		Range(0, -5, -2): None,
+	testCases := map[*Iterator]interface{}{
+		Range(0, 0, 0):   nil,
+		Range(0, 1, 1):   nil,
+		Range(0, 4, 1):   3,
+		Range(0, 5, 2):   nil,
+		Range(0, -4, -1): -3,
+		Range(0, -5, -2): nil,
 	}
 
 	for iter, want := range testCases {
@@ -190,13 +190,13 @@ func TestRangeAny(t *testing.T) {
 }
 
 func TestRangeFind(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Range(0, 0, 0):   None,
-		Range(0, 1, 1):   None,
-		Range(0, 4, 1):   None,
-		Range(0, 5, 2):   None,
-		Range(0, -4, -1): Some(-1),
-		Range(0, -5, -2): Some(-2),
+	testCases := map[*Iterator]interface{}{
+		Range(0, 0, 0):   nil,
+		Range(0, 1, 1):   nil,
+		Range(0, 4, 1):   nil,
+		Range(0, 5, 2):   nil,
+		Range(0, -4, -1): -1,
+		Range(0, -5, -2): -2,
 	}
 	for iter, want := range testCases {
 		got := iter.Find(func(item interface{}) bool {
@@ -210,13 +210,13 @@ func TestRangeFind(t *testing.T) {
 }
 
 func TestRangePosition(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Range(0, 0, 0):   None,
-		Range(0, 1, 1):   None,
-		Range(0, 4, 1):   None,
-		Range(0, 5, 2):   None,
-		Range(0, -4, -1): Some(uint(1)),
-		Range(0, -5, -2): Some(uint(1)),
+	testCases := map[*Iterator]interface{}{
+		Range(0, 0, 0):   nil,
+		Range(0, 1, 1):   nil,
+		Range(0, 4, 1):   nil,
+		Range(0, 5, 2):   nil,
+		Range(0, -4, -1): uint(1),
+		Range(0, -5, -2): uint(1),
 	}
 
 	for iter, want := range testCases {
@@ -231,13 +231,13 @@ func TestRangePosition(t *testing.T) {
 }
 
 func TestRangeSkipWhile(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Range(0, 0, 0):   None,
-		Range(0, 1, 1):   None,
-		Range(0, 4, 1):   None,
-		Range(0, 5, 2):   None,
-		Range(0, -4, -1): Some(-2),
-		Range(0, -5, -2): Some(-4),
+	testCases := map[*Iterator]interface{}{
+		Range(0, 0, 0):   nil,
+		Range(0, 1, 1):   nil,
+		Range(0, 4, 1):   nil,
+		Range(0, 5, 2):   nil,
+		Range(0, -4, -1): -2,
+		Range(0, -5, -2): -4,
 	}
 
 	for iter, want := range testCases {
@@ -252,13 +252,13 @@ func TestRangeSkipWhile(t *testing.T) {
 }
 
 func TestRangeSkip(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Range(0, 0, 0):   None,
-		Range(0, 1, 1):   None,
-		Range(0, 4, 1):   Some(2),
-		Range(0, 5, 2):   Some(4),
-		Range(0, -4, -1): Some(-2),
-		Range(0, -5, -2): Some(-4),
+	testCases := map[*Iterator]interface{}{
+		Range(0, 0, 0):   nil,
+		Range(0, 1, 1):   nil,
+		Range(0, 4, 1):   2,
+		Range(0, 5, 2):   4,
+		Range(0, -4, -1): -2,
+		Range(0, -5, -2): -4,
 	}
 
 	for iter, want := range testCases {

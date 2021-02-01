@@ -25,11 +25,11 @@ func TestVectorFold(t *testing.T) {
 }
 
 func TestVectorFoldFirst(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Vector([]interface{}{}):            None,
-		Vector([]interface{}{0}):           Some(0),
-		Vector([]interface{}{0, 1, 2, 3}):  Some(6),
-		Vector([]interface{}{0, 1, -2, 3}): Some(2),
+	testCases := map[*Iterator]interface{}{
+		Vector([]interface{}{}):            nil,
+		Vector([]interface{}{0}):           0,
+		Vector([]interface{}{0, 1, 2, 3}):  6,
+		Vector([]interface{}{0, 1, -2, 3}): 2,
 	}
 
 	for iter, want := range testCases {
@@ -100,11 +100,11 @@ func TestVectorCount(t *testing.T) {
 }
 
 func TestVectorLast(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Vector([]interface{}{}):            None,
-		Vector([]interface{}{0}):           Some(0),
-		Vector([]interface{}{0, 1, 2, 3}):  Some(3),
-		Vector([]interface{}{0, 1, -2, 3}): Some(3),
+	testCases := map[*Iterator]interface{}{
+		Vector([]interface{}{}):            nil,
+		Vector([]interface{}{0}):           0,
+		Vector([]interface{}{0, 1, 2, 3}):  3,
+		Vector([]interface{}{0, 1, -2, 3}): 3,
 	}
 
 	for iter, want := range testCases {
@@ -117,11 +117,11 @@ func TestVectorLast(t *testing.T) {
 }
 
 func TestVectorNth(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Vector([]interface{}{}):            None,
-		Vector([]interface{}{0}):           None,
-		Vector([]interface{}{0, 1, 2, 3}):  Some(3),
-		Vector([]interface{}{0, 1, -2, 3}): Some(3),
+	testCases := map[*Iterator]interface{}{
+		Vector([]interface{}{}):            nil,
+		Vector([]interface{}{0}):           nil,
+		Vector([]interface{}{0, 1, 2, 3}):  3,
+		Vector([]interface{}{0, 1, -2, 3}): 3,
 	}
 
 	for iter, want := range testCases {
@@ -172,11 +172,11 @@ func TestVectorAny(t *testing.T) {
 }
 
 func TestVectorFind(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Vector([]interface{}{}):            None,
-		Vector([]interface{}{0}):           None,
-		Vector([]interface{}{0, 1, 2, 3}):  None,
-		Vector([]interface{}{0, 1, -2, 3}): Some(-2),
+	testCases := map[*Iterator]interface{}{
+		Vector([]interface{}{}):            nil,
+		Vector([]interface{}{0}):           nil,
+		Vector([]interface{}{0, 1, 2, 3}):  nil,
+		Vector([]interface{}{0, 1, -2, 3}): -2,
 	}
 
 	for iter, want := range testCases {
@@ -191,11 +191,11 @@ func TestVectorFind(t *testing.T) {
 }
 
 func TestVectorPosition(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Vector([]interface{}{}):            None,
-		Vector([]interface{}{0}):           None,
-		Vector([]interface{}{0, 1, 2, 3}):  None,
-		Vector([]interface{}{0, 1, -2, 3}): Some(uint(2)),
+	testCases := map[*Iterator]interface{}{
+		Vector([]interface{}{}):            nil,
+		Vector([]interface{}{0}):           nil,
+		Vector([]interface{}{0, 1, 2, 3}):  nil,
+		Vector([]interface{}{0, 1, -2, 3}): uint(2),
 	}
 
 	for iter, want := range testCases {
@@ -210,11 +210,11 @@ func TestVectorPosition(t *testing.T) {
 }
 
 func TestVectorSkipWhile(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Vector([]interface{}{}):            None,
-		Vector([]interface{}{0}):           None,
-		Vector([]interface{}{0, 1, 2, 3}):  None,
-		Vector([]interface{}{0, 1, -2, 3}): Some(3),
+	testCases := map[*Iterator]interface{}{
+		Vector([]interface{}{}):            nil,
+		Vector([]interface{}{0}):           nil,
+		Vector([]interface{}{0, 1, 2, 3}):  nil,
+		Vector([]interface{}{0, 1, -2, 3}): 3,
 	}
 
 	for iter, want := range testCases {
@@ -229,11 +229,11 @@ func TestVectorSkipWhile(t *testing.T) {
 }
 
 func TestVectorSkip(t *testing.T) {
-	testCases := map[*Iterator]Option{
-		Vector([]interface{}{}):            None,
-		Vector([]interface{}{0}):           None,
-		Vector([]interface{}{0, 1, 2, 3}):  Some(2),
-		Vector([]interface{}{0, 1, -2, 3}): Some(-2),
+	testCases := map[*Iterator]interface{}{
+		Vector([]interface{}{}):            nil,
+		Vector([]interface{}{0}):           nil,
+		Vector([]interface{}{0, 1, 2, 3}):  2,
+		Vector([]interface{}{0, 1, -2, 3}): -2,
 	}
 
 	for iter, want := range testCases {

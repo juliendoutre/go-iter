@@ -2,7 +2,7 @@ package iter
 
 // Iterable describes a struct that can be iterated over.
 type Iterable interface {
-	Next() Option
+	Next() interface{}
 }
 
 // Iterator embeds an Iterable and provides util functions for it.
@@ -11,7 +11,7 @@ type Iterator struct {
 }
 
 // Next returns the next element of the Iterator.
-func (i *Iterator) Next() Option {
+func (i *Iterator) Next() interface{} {
 	return i.iter.Next()
 }
 
@@ -20,8 +20,8 @@ func (i *Iterator) Fold(init interface{}, reducer func(acc, item interface{}) in
 	acc := init
 
 	item := i.Next()
-	for item.IsSome() {
-		acc = reducer(acc, item.Unwrap())
+	for item != nil {
+		acc = reducer(acc, item)
 
 		item = i.Next()
 	}
@@ -34,8 +34,8 @@ func (i *Iterator) TryFold(init interface{}, reducer func(acc, item interface{})
 	acc := init
 
 	item := i.Next()
-	for item.IsSome() {
-		r := reducer(acc, item.Unwrap())
+	for item != nil {
+		r := reducer(acc, item)
 
 		if r.ShouldBreak() {
 			return r
@@ -50,13 +50,13 @@ func (i *Iterator) TryFold(init interface{}, reducer func(acc, item interface{})
 }
 
 // FoldFirst folds over the Iterator, using its first element as the accumulator initial value.
-func (i *Iterator) FoldFirst(reducer func(acc, item interface{}) interface{}) Option {
+func (i *Iterator) FoldFirst(reducer func(acc, item interface{}) interface{}) interface{} {
 	first := i.Next()
-	if first.IsNone() {
-		return None
+	if first == nil {
+		return nil
 	}
 
-	return Some(i.Fold(first.Unwrap(), reducer))
+	return i.Fold(first, reducer)
 }
 
 // Count returns the number of elements in the Iterator.
@@ -67,10 +67,10 @@ func (i *Iterator) Count() uint {
 }
 
 // Last returns the last element of the Iterator.
-func (i *Iterator) Last() Option {
-	return i.Fold(None, func(acc, item interface{}) interface{} {
-		return Some(item)
-	}).(Option)
+func (i *Iterator) Last() interface{} {
+	return i.Fold(nil, func(acc, item interface{}) interface{} {
+		return item
+	})
 }
 
 // AdvanceBy calls Next n times.
@@ -78,7 +78,7 @@ func (i *Iterator) Last() Option {
 // before it finished to iterate.
 func (i *Iterator) AdvanceBy(n uint) error {
 	for k := uint(0); k < n; k++ {
-		if i.Next().IsNone() {
+		if i.Next() == nil {
 			return &errAdvanceBy{}
 		}
 	}
@@ -93,7 +93,7 @@ func (e *errAdvanceBy) Error() string {
 }
 
 // Nth returns the nth element of the Iterator.
-func (i *Iterator) Nth(n uint) Option {
+func (i *Iterator) Nth(n uint) interface{} {
 	i.AdvanceBy(n)
 	return i.Next()
 }
@@ -111,8 +111,8 @@ func (i *Iterator) Collect() []interface{} {
 	collected := []interface{}{}
 
 	item := i.Next()
-	for item.IsSome() {
-		collected = append(collected, item.Unwrap())
+	for item != nil {
+		collected = append(collected, item)
 
 		item = i.Next()
 	}
@@ -143,7 +143,7 @@ func (i *Iterator) Any(predicate func(item interface{}) bool) bool {
 }
 
 // Find returns the first element of the Iterator that validates a predicate.
-func (i *Iterator) Find(predicate func(item interface{}) bool) Option {
+func (i *Iterator) Find(predicate func(item interface{}) bool) interface{} {
 	result := i.TryFold(nil, func(acc, item interface{}) ControlFlow {
 		if predicate(item) {
 			return Break(item)
@@ -153,14 +153,14 @@ func (i *Iterator) Find(predicate func(item interface{}) bool) Option {
 	})
 
 	if result.ShouldContinue() {
-		return None
+		return nil
 	}
 
-	return Some(result.Unwrap())
+	return result.Unwrap()
 }
 
 // Position returns the position of the first element of the Iterator that validates a predicate.
-func (i *Iterator) Position(predicate func(item interface{}) bool) Option {
+func (i *Iterator) Position(predicate func(item interface{}) bool) interface{} {
 	result := i.TryFold(uint(0), func(acc, item interface{}) ControlFlow {
 		if predicate(item) {
 			return Break(acc)
@@ -170,10 +170,10 @@ func (i *Iterator) Position(predicate func(item interface{}) bool) Option {
 	})
 
 	if result.ShouldContinue() {
-		return None
+		return nil
 	}
 
-	return Some(result.Unwrap())
+	return result.Unwrap()
 }
 
 // SkipWhile skips the next elements until it reaches one which validates predicate.
@@ -185,7 +185,7 @@ func (i *Iterator) SkipWhile(predicate func(item interface{}) bool) *Iterator {
 
 // Skip the next n iterations.
 func (i *Iterator) Skip(n uint) *Iterator {
-	for k := uint(0); k < n && i.Next().IsSome(); k++ {
+	for k := uint(0); k < n && i.Next() != nil; k++ {
 	}
 
 	return i
