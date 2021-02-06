@@ -16,17 +16,17 @@ type IteratorForElement struct {
 }
 
 // Iterator implements Iterable.
-var _ IterableForElement = &IteratorForElement{}
+var _ IterableForElement = IteratorForElement{}
 
 // Next returns the next element of the Iterator.
-func (i *IteratorForElement) Next() OptionForElement {
+func (i IteratorForElement) Next() OptionForElement {
 	return i.iter.Next()
 }
 
 // AdvanceBy calls Next n times.
 // It returns an error if it reached the end of the Iterator
 // before it finished to iterate.
-func (i *IteratorForElement) AdvanceBy(n uint) error {
+func (i IteratorForElement) AdvanceBy(n uint) error {
 	for k := uint(0); k < n; k++ {
 		if i.Next().IsNone() {
 			return &errAdvanceBy{}
@@ -37,19 +37,19 @@ func (i *IteratorForElement) AdvanceBy(n uint) error {
 }
 
 // Nth returns the nth element of the Iterator.
-func (i *IteratorForElement) Nth(n uint) OptionForElement {
+func (i IteratorForElement) Nth(n uint) OptionForElement {
 	i.AdvanceBy(n)
 	return i.Next()
 }
 
 // Skip the next n iterations.
-func (i *IteratorForElement) Skip(n uint) *IteratorForElement {
+func (i IteratorForElement) Skip(n uint) IteratorForElement {
 	i.AdvanceBy(n)
 	return i
 }
 
 // Collect returns a slice containing the elements of the Iterator.
-func (i *IteratorForElement) Collect() []Element {
+func (i IteratorForElement) Collect() []Element {
 	collected := []Element{}
 
 	item := i.Next()
@@ -63,7 +63,7 @@ func (i *IteratorForElement) Collect() []Element {
 }
 
 // FoldFirst folds over the Iterator, using its first element as the accumulator initial value.
-func (i *IteratorForElement) FoldFirst(reducer func(acc, item Element) Element) OptionForElement {
+func (i IteratorForElement) FoldFirst(reducer func(acc, item Element) Element) OptionForElement {
 	first := i.Next()
 	if first.IsNone() {
 		return NoneElement()
@@ -73,21 +73,21 @@ func (i *IteratorForElement) FoldFirst(reducer func(acc, item Element) Element) 
 }
 
 // Count returns the number of elements in the Iterator.
-func (i *IteratorForElement) Count() uint {
+func (i IteratorForElement) Count() uint {
 	return i.FoldForUint(uint(0), func(acc uint, item Element) uint {
 		return acc + 1
 	})
 }
 
 // Last returns the last element of the Iterator.
-func (i *IteratorForElement) Last() OptionForElement {
+func (i IteratorForElement) Last() OptionForElement {
 	return i.FoldForOptionForElement(NoneElement(), func(acc OptionForElement, item Element) OptionForElement {
 		return SomeElement(item)
 	})
 }
 
 // ForEach runs a callback for every element of the iterator.
-func (i *IteratorForElement) ForEach(callback func(item Element)) {
+func (i IteratorForElement) ForEach(callback func(item Element)) {
 	i.FoldForEmpty(Empty{}, func(acc Empty, item Element) Empty {
 		callback(item)
 		return acc
@@ -95,7 +95,7 @@ func (i *IteratorForElement) ForEach(callback func(item Element)) {
 }
 
 // All checks if all the elements of the Iterator validates a predicate.
-func (i *IteratorForElement) All(predicate func(item Element) bool) bool {
+func (i IteratorForElement) All(predicate func(item Element) bool) bool {
 	_, ok := i.TryFoldForEmpty(Empty{}, func(acc Empty, item Element) (Empty, bool) {
 		return acc, predicate(item)
 	})
@@ -103,7 +103,7 @@ func (i *IteratorForElement) All(predicate func(item Element) bool) bool {
 }
 
 // Any checks if at least one element of the Iterator validates a predicate.
-func (i *IteratorForElement) Any(predicate func(item Element) bool) bool {
+func (i IteratorForElement) Any(predicate func(item Element) bool) bool {
 	_, ok := i.TryFoldForEmpty(Empty{}, func(acc Empty, item Element) (Empty, bool) {
 		return acc, !predicate(item)
 	})
@@ -111,7 +111,7 @@ func (i *IteratorForElement) Any(predicate func(item Element) bool) bool {
 }
 
 // Find returns the first element of the Iterator that validates a predicate.
-func (i *IteratorForElement) Find(predicate func(item Element) bool) OptionForElement {
+func (i IteratorForElement) Find(predicate func(item Element) bool) OptionForElement {
 	r, ok := i.TryFoldForOptionForElement(NoneElement(), func(acc OptionForElement, item Element) (OptionForElement, bool) {
 		return SomeElement(item), !predicate(item)
 	})
@@ -124,7 +124,7 @@ func (i *IteratorForElement) Find(predicate func(item Element) bool) OptionForEl
 }
 
 // Position returns the position of the first element of the Iterator that validates a predicate.
-func (i *IteratorForElement) Position(predicate func(item Element) bool) OptionForUint {
+func (i IteratorForElement) Position(predicate func(item Element) bool) OptionForUint {
 	r, ok := i.TryFoldForUint(uint(0), func(acc uint, item Element) (uint, bool) {
 		if predicate(item) {
 			return acc, false
@@ -141,33 +141,33 @@ func (i *IteratorForElement) Position(predicate func(item Element) bool) OptionF
 }
 
 // SkipWhile skips the next elements until it reaches one which validates predicate.
-func (i *IteratorForElement) SkipWhile(predicate func(item Element) bool) *IteratorForElement {
+func (i IteratorForElement) SkipWhile(predicate func(item Element) bool) IteratorForElement {
 	i.Find(predicate)
 
 	return i
 }
 
 // Map returns a new Iterator applying a mapper function to every element.
-func (i *IteratorForElement) Map(mapper func(item Element) Element) *IteratorForElement {
-	return &IteratorForElement{iter: &mapIterableForElement{mapper: mapper, iter: i.iter}}
+func (i IteratorForElement) Map(mapper func(item Element) Element) IteratorForElement {
+	return IteratorForElement{iter: &mapIterableForElement{mapper: mapper, iter: i.iter}}
 }
 
 // Chain returns a new Iterator sequentially joining the two it was built on.
-func (i *IteratorForElement) Chain(iter *IteratorForElement) *IteratorForElement {
-	return &IteratorForElement{iter: &chainForElement{first: i.iter, second: iter.iter, flag: false}}
+func (i IteratorForElement) Chain(iter IteratorForElement) IteratorForElement {
+	return IteratorForElement{iter: &chainForElement{first: i.iter, second: iter.iter, flag: false}}
 }
 
 // TakeWhile returns a new Iterator yielding elements until predicate becomes false.
-func (i *IteratorForElement) TakeWhile(predicate func(item Element) bool) *IteratorForElement {
-	return &IteratorForElement{iter: &takeWhileForElement{iter: i.iter, predicate: predicate, flag: false}}
+func (i IteratorForElement) TakeWhile(predicate func(item Element) bool) IteratorForElement {
+	return IteratorForElement{iter: &takeWhileForElement{iter: i.iter, predicate: predicate, flag: false}}
 }
 
 // Take returns a new Iterator yielding only the n next elements.
-func (i *IteratorForElement) Take(n uint) *IteratorForElement {
-	return &IteratorForElement{iter: &takeForElement{iter: i.iter, count: 0, max: n, flag: false}}
+func (i IteratorForElement) Take(n uint) IteratorForElement {
+	return IteratorForElement{iter: &takeForElement{iter: i.iter, count: 0, max: n, flag: false}}
 }
 
 // Filter returns a new Iterator yielding only elements validating a predicate.
-func (i *IteratorForElement) Filter(predicate func(item Element) bool) *IteratorForElement {
-	return &IteratorForElement{iter: &filterForElement{iter: i, predicate: predicate}}
+func (i IteratorForElement) Filter(predicate func(item Element) bool) IteratorForElement {
+	return IteratorForElement{iter: &filterForElement{iter: i, predicate: predicate}}
 }

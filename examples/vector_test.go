@@ -6,7 +6,7 @@ import (
 )
 
 func TestVectorFold(t *testing.T) {
-	testCases := map[*IteratorForInt]int{
+	testCases := map[IteratorForInt]int{
 		VectorOfInt([]int{}):            0,
 		VectorOfInt([]int{0}):           0,
 		VectorOfInt([]int{0, 1, 2, 3}):  6,
@@ -25,7 +25,7 @@ func TestVectorFold(t *testing.T) {
 }
 
 func TestVectorFoldFirst(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForInt{
+	testCases := map[IteratorForInt]OptionForInt{
 		VectorOfInt([]int{}):            NoneInt(),
 		VectorOfInt([]int{0}):           SomeInt(0),
 		VectorOfInt([]int{0, 1, 2, 3}):  SomeInt(6),
@@ -44,7 +44,7 @@ func TestVectorFoldFirst(t *testing.T) {
 }
 
 func TestVectorForEach(t *testing.T) {
-	testCases := map[*IteratorForInt]int{
+	testCases := map[IteratorForInt]int{
 		VectorOfInt([]int{}):            0,
 		VectorOfInt([]int{0}):           0,
 		VectorOfInt([]int{0, 1, 2, 3}):  6,
@@ -64,7 +64,7 @@ func TestVectorForEach(t *testing.T) {
 }
 
 func TestVectorMapAndCollect(t *testing.T) {
-	testCases := map[*IteratorForInt][]int{
+	testCases := map[IteratorForInt][]int{
 		VectorOfInt([]int{}):            {},
 		VectorOfInt([]int{0}):           {0},
 		VectorOfInt([]int{0, 1, 2, 3}):  {0, 1, 4, 9},
@@ -83,7 +83,7 @@ func TestVectorMapAndCollect(t *testing.T) {
 }
 
 func TestVectorCount(t *testing.T) {
-	testCases := map[*IteratorForInt]uint{
+	testCases := map[IteratorForInt]uint{
 		VectorOfInt([]int{}):            0,
 		VectorOfInt([]int{0}):           1,
 		VectorOfInt([]int{0, 1, 2, 3}):  4,
@@ -100,7 +100,7 @@ func TestVectorCount(t *testing.T) {
 }
 
 func TestVectorLast(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForInt{
+	testCases := map[IteratorForInt]OptionForInt{
 		VectorOfInt([]int{}):            NoneInt(),
 		VectorOfInt([]int{0}):           SomeInt(0),
 		VectorOfInt([]int{0, 1, 2, 3}):  SomeInt(3),
@@ -117,7 +117,7 @@ func TestVectorLast(t *testing.T) {
 }
 
 func TestVectorNth(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForInt{
+	testCases := map[IteratorForInt]OptionForInt{
 		VectorOfInt([]int{}):            NoneInt(),
 		VectorOfInt([]int{0}):           NoneInt(),
 		VectorOfInt([]int{0, 1, 2, 3}):  SomeInt(3),
@@ -134,7 +134,7 @@ func TestVectorNth(t *testing.T) {
 }
 
 func TestVectorAll(t *testing.T) {
-	testCases := map[*IteratorForInt]bool{
+	testCases := map[IteratorForInt]bool{
 		VectorOfInt([]int{}):            true,
 		VectorOfInt([]int{0}):           true,
 		VectorOfInt([]int{0, 1, 2, 3}):  true,
@@ -153,7 +153,7 @@ func TestVectorAll(t *testing.T) {
 }
 
 func TestVectorAny(t *testing.T) {
-	testCases := map[*IteratorForInt]bool{
+	testCases := map[IteratorForInt]bool{
 		VectorOfInt([]int{}):            false,
 		VectorOfInt([]int{0}):           false,
 		VectorOfInt([]int{0, 1, 2, 3}):  false,
@@ -172,7 +172,7 @@ func TestVectorAny(t *testing.T) {
 }
 
 func TestVectorFind(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForInt{
+	testCases := map[IteratorForInt]OptionForInt{
 		VectorOfInt([]int{}):            NoneInt(),
 		VectorOfInt([]int{0}):           NoneInt(),
 		VectorOfInt([]int{0, 1, 2, 3}):  NoneInt(),
@@ -191,7 +191,7 @@ func TestVectorFind(t *testing.T) {
 }
 
 func TestVectorPosition(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForUint{
+	testCases := map[IteratorForInt]OptionForUint{
 		VectorOfInt([]int{}):            NoneUint(),
 		VectorOfInt([]int{0}):           NoneUint(),
 		VectorOfInt([]int{0, 1, 2, 3}):  NoneUint(),
@@ -210,7 +210,7 @@ func TestVectorPosition(t *testing.T) {
 }
 
 func TestVectorSkipWhile(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForInt{
+	testCases := map[IteratorForInt]OptionForInt{
 		VectorOfInt([]int{}):            NoneInt(),
 		VectorOfInt([]int{0}):           NoneInt(),
 		VectorOfInt([]int{0, 1, 2, 3}):  NoneInt(),
@@ -229,7 +229,7 @@ func TestVectorSkipWhile(t *testing.T) {
 }
 
 func TestVectorSkip(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForInt{
+	testCases := map[IteratorForInt]OptionForInt{
 		VectorOfInt([]int{}):            NoneInt(),
 		VectorOfInt([]int{0}):           NoneInt(),
 		VectorOfInt([]int{0, 1, 2, 3}):  SomeInt(2),
@@ -246,7 +246,7 @@ func TestVectorSkip(t *testing.T) {
 }
 
 func TestVectorFilter(t *testing.T) {
-	testCases := map[*IteratorForInt][]int{
+	testCases := map[IteratorForInt][]int{
 		VectorOfInt([]int{}):            {},
 		VectorOfInt([]int{0}):           {},
 		VectorOfInt([]int{0, 1, 2, 3}):  {},
@@ -265,7 +265,7 @@ func TestVectorFilter(t *testing.T) {
 }
 
 func TestVectorTakeWhile(t *testing.T) {
-	testCases := map[*IteratorForInt][]int{
+	testCases := map[IteratorForInt][]int{
 		VectorOfInt([]int{}):            {},
 		VectorOfInt([]int{0}):           {0},
 		VectorOfInt([]int{0, 1, 2, 3}):  {0, 1, 2, 3},
@@ -284,7 +284,7 @@ func TestVectorTakeWhile(t *testing.T) {
 }
 
 func TestVectorTake(t *testing.T) {
-	testCases := map[*IteratorForInt][]int{
+	testCases := map[IteratorForInt][]int{
 		VectorOfInt([]int{}):            {},
 		VectorOfInt([]int{0}):           {0},
 		VectorOfInt([]int{0, 1, 2, 3}):  {0, 1, 2},
@@ -303,7 +303,7 @@ func TestVectorTake(t *testing.T) {
 func TestVectorChain(t *testing.T) {
 	base := []int{-1, -6}
 
-	testCases := map[*IteratorForInt][]int{
+	testCases := map[IteratorForInt][]int{
 		VectorOfInt([]int{}):            {-1, -6},
 		VectorOfInt([]int{0}):           {-1, -6, 0},
 		VectorOfInt([]int{0, 1, 2, 3}):  {-1, -6, 0, 1, 2, 3},

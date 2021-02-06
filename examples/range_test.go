@@ -6,7 +6,7 @@ import (
 )
 
 func TestRangeFold(t *testing.T) {
-	testCases := map[*IteratorForInt]int{
+	testCases := map[IteratorForInt]int{
 		Range(0, 0, 0):   0,
 		Range(0, 1, 1):   0,
 		Range(0, 4, 1):   6,
@@ -27,7 +27,7 @@ func TestRangeFold(t *testing.T) {
 }
 
 func TestRangeFoldFirst(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForInt{
+	testCases := map[IteratorForInt]OptionForInt{
 		Range(0, 0, 0):   NoneInt(),
 		Range(0, 1, 1):   SomeInt(0),
 		Range(0, 4, 1):   SomeInt(6),
@@ -48,7 +48,7 @@ func TestRangeFoldFirst(t *testing.T) {
 }
 
 func TestRangeForEach(t *testing.T) {
-	testCases := map[*IteratorForInt]int{
+	testCases := map[IteratorForInt]int{
 		Range(0, 0, 0):   0,
 		Range(0, 1, 1):   0,
 		Range(0, 4, 1):   6,
@@ -70,7 +70,7 @@ func TestRangeForEach(t *testing.T) {
 }
 
 func TestRangeMapAndCollect(t *testing.T) {
-	testCases := map[*IteratorForInt][]int{
+	testCases := map[IteratorForInt][]int{
 		Range(0, 0, 0):   {},
 		Range(0, 1, 1):   {0},
 		Range(0, 4, 1):   {0, 1, 4, 9},
@@ -91,7 +91,7 @@ func TestRangeMapAndCollect(t *testing.T) {
 }
 
 func TestRangeCount(t *testing.T) {
-	testCases := map[*IteratorForInt]uint{
+	testCases := map[IteratorForInt]uint{
 		Range(0, 0, 0):   0,
 		Range(0, 1, 1):   1,
 		Range(0, 4, 1):   4,
@@ -110,7 +110,7 @@ func TestRangeCount(t *testing.T) {
 }
 
 func TestRangeLast(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForInt{
+	testCases := map[IteratorForInt]OptionForInt{
 		Range(0, 0, 0):   NoneInt(),
 		Range(0, 1, 1):   SomeInt(0),
 		Range(0, 4, 1):   SomeInt(3),
@@ -129,7 +129,7 @@ func TestRangeLast(t *testing.T) {
 }
 
 func TestRangeNth(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForInt{
+	testCases := map[IteratorForInt]OptionForInt{
 		Range(0, 0, 0):   NoneInt(),
 		Range(0, 1, 1):   NoneInt(),
 		Range(0, 4, 1):   SomeInt(3),
@@ -148,7 +148,7 @@ func TestRangeNth(t *testing.T) {
 }
 
 func TestRangeAll(t *testing.T) {
-	testCases := map[*IteratorForInt]bool{
+	testCases := map[IteratorForInt]bool{
 		Range(0, 0, 0):   true,
 		Range(0, 1, 1):   true,
 		Range(0, 4, 1):   true,
@@ -169,7 +169,7 @@ func TestRangeAll(t *testing.T) {
 }
 
 func TestRangeAny(t *testing.T) {
-	testCases := map[*IteratorForInt]bool{
+	testCases := map[IteratorForInt]bool{
 		Range(0, 0, 0):   false,
 		Range(0, 1, 1):   false,
 		Range(0, 4, 1):   false,
@@ -190,7 +190,7 @@ func TestRangeAny(t *testing.T) {
 }
 
 func TestRangeFind(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForInt{
+	testCases := map[IteratorForInt]OptionForInt{
 		Range(0, 0, 0):   NoneInt(),
 		Range(0, 1, 1):   NoneInt(),
 		Range(0, 4, 1):   NoneInt(),
@@ -210,7 +210,7 @@ func TestRangeFind(t *testing.T) {
 }
 
 func TestRangePosition(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForUint{
+	testCases := map[IteratorForInt]OptionForUint{
 		Range(0, 0, 0):   NoneUint(),
 		Range(0, 1, 1):   NoneUint(),
 		Range(0, 4, 1):   NoneUint(),
@@ -231,7 +231,7 @@ func TestRangePosition(t *testing.T) {
 }
 
 func TestRangeSkipWhile(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForInt{
+	testCases := map[IteratorForInt]OptionForInt{
 		Range(0, 0, 0):   NoneInt(),
 		Range(0, 1, 1):   NoneInt(),
 		Range(0, 4, 1):   NoneInt(),
@@ -252,7 +252,7 @@ func TestRangeSkipWhile(t *testing.T) {
 }
 
 func TestRangeSkip(t *testing.T) {
-	testCases := map[*IteratorForInt]OptionForInt{
+	testCases := map[IteratorForInt]OptionForInt{
 		Range(0, 0, 0):   NoneInt(),
 		Range(0, 1, 1):   NoneInt(),
 		Range(0, 4, 1):   SomeInt(2),
@@ -271,7 +271,7 @@ func TestRangeSkip(t *testing.T) {
 }
 
 func TestRangeFilter(t *testing.T) {
-	testCases := map[*IteratorForInt][]int{
+	testCases := map[IteratorForInt][]int{
 		Range(0, 0, 0):   {},
 		Range(0, 1, 1):   {},
 		Range(0, 4, 1):   {},
@@ -292,7 +292,7 @@ func TestRangeFilter(t *testing.T) {
 }
 
 func TestRangeTakeWhile(t *testing.T) {
-	testCases := map[*IteratorForInt][]int{
+	testCases := map[IteratorForInt][]int{
 		Range(0, 0, 0):   {},
 		Range(0, 1, 1):   {0},
 		Range(0, 4, 1):   {0, 1, 2, 3},
@@ -313,7 +313,7 @@ func TestRangeTakeWhile(t *testing.T) {
 }
 
 func TestRangeTake(t *testing.T) {
-	testCases := map[*IteratorForInt][]int{
+	testCases := map[IteratorForInt][]int{
 		Range(0, 0, 0):   {},
 		Range(0, 1, 1):   {0},
 		Range(0, 4, 1):   {0, 1, 2},
@@ -332,7 +332,7 @@ func TestRangeTake(t *testing.T) {
 }
 
 func TestRangeChain(t *testing.T) {
-	testCases := map[*IteratorForInt][]int{
+	testCases := map[IteratorForInt][]int{
 		Range(0, 0, 0):   {-1, 0},
 		Range(0, 1, 1):   {-1, 0, 0},
 		Range(0, 4, 1):   {-1, 0, 0, 1, 2, 3},

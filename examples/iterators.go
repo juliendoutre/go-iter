@@ -106,7 +106,7 @@ func (t *takeForInt) Next() OptionForInt {
 var _ IterableForInt = &takeForInt{}
 
 type filterForInt struct {
-	iter      *IteratorForInt
+	iter      IteratorForInt
 	predicate func(item int) bool
 }
 
@@ -218,7 +218,7 @@ func (t *takeForString) Next() OptionForString {
 var _ IterableForString = &takeForString{}
 
 type filterForString struct {
-	iter      *IteratorForString
+	iter      IteratorForString
 	predicate func(item string) bool
 }
 

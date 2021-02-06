@@ -102,7 +102,7 @@ func (t *takeForElement) Next() OptionForElement {
 var _ IterableForElement = &takeForElement{}
 
 type filterForElement struct {
-	iter      *IteratorForElement
+	iter      IteratorForElement
 	predicate func(item Element) bool
 }
 

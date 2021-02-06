@@ -2,8 +2,8 @@ package templates
 
 // Range builds an Iterator from a range of integers.
 // The range start is inclusive but its end is exclusive.
-func Range(start, end, step int) *IteratorForInt {
-	return &IteratorForInt{
+func Range(start, end, step int) IteratorForInt {
+	return IteratorForInt{
 		iter: &rangeIterable{index: start, end: end, step: step},
 	}
 }

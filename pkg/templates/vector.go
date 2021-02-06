@@ -1,8 +1,8 @@
 package templates
 
 // VectorOfElement builds an Iterator from a slice.
-func VectorOfElement(slice []Element) *IteratorForElement {
-	return &IteratorForElement{
+func VectorOfElement(slice []Element) IteratorForElement {
+	return IteratorForElement{
 		iter: &vectorForElement{slice: slice, cursor: 0},
 	}
 }

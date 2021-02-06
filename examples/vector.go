@@ -5,8 +5,8 @@
 package iter
 
 // VectorOfInt builds an Iterator from a slice.
-func VectorOfInt(slice []int) *IteratorForInt {
-	return &IteratorForInt{
+func VectorOfInt(slice []int) IteratorForInt {
+	return IteratorForInt{
 		iter: &vectorForInt{slice: slice, cursor: 0},
 	}
 }
@@ -30,8 +30,8 @@ func (v *vectorForInt) Next() OptionForInt {
 var _ IterableForInt = &vectorForInt{}
 
 // VectorOfString builds an Iterator from a slice.
-func VectorOfString(slice []string) *IteratorForString {
-	return &IteratorForString{
+func VectorOfString(slice []string) IteratorForString {
+	return IteratorForString{
 		iter: &vectorForString{slice: slice, cursor: 0},
 	}
 }
