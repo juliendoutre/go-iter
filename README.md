@@ -6,9 +6,18 @@ Implement iterators in Go, approaching performances of `for` loops, without exte
 
 ## Generator
 
-Generate code to use iterators for any type with:
+Generate Iterators code for any type with the generator CLI helper tool:
 ```shell
-go run cmd/generator/main.go -items "int,string,*MyStruct"
+go run cmd/generator/main.go --help
+Usage of generator:
+  -accs string
+        comma separated types to support folding over (default "int")
+  -items string
+        comma separated types to create iterators for (default "int")
+  -out string
+        path where to write generated files (default ".")
+  -pkg string
+        package name to be adopted by generated files (default "iter")
 ```
 
 The `examples` folder contains tests and benchmarks for Iterators generated with:

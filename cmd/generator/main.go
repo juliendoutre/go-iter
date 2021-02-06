@@ -46,10 +46,10 @@ var (
 )
 
 func main() {
-	flag.StringVar(&out, "out", ".", "path where to write the generated files")
-	flag.StringVar(&pkg, "pkg", "iter", "Name of the package to be used by generated files")
-	flag.StringVar(&elementTypes, "items", "int", "comma separated types for the items of iterators")
-	flag.StringVar(&accumulatorTypes, "acc", "int", "comma separated types for the accumulators over iterators")
+	flag.StringVar(&out, "out", ".", "path where to write generated files")
+	flag.StringVar(&pkg, "pkg", "iter", "package name to be adopted by generated files")
+	flag.StringVar(&elementTypes, "items", "int", "comma separated types to create iterators for")
+	flag.StringVar(&accumulatorTypes, "accs", "int", "comma separated types to support folding over")
 	flag.Parse()
 
 	in := path.Join(os.Getenv("GOPATH"), "src", "github.com", "juliendoutre", "go-iter", "pkg", "templates")
