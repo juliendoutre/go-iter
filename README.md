@@ -2,7 +2,7 @@
 
 ## End goal
 
-Implement iterators in Go, approaching performances of simple `for` loops, without external dependendies.
+Implement iterators in Go, approaching performances of simple `for` loops, without external dependencies.
 
 ## Current state
 
@@ -16,6 +16,10 @@ BenchmarkVectorStringSearch/with_a_vector-8               313200              37
 
 Pprof leads me to think this is caused by excessive heap allocations due to the `interface{}` type.
 
-## Next steps
-
-Use [genny](https://github.com/cheekybits/genny) to generate code for concrete types.
+After having moved to generated code, memory allocation performances improved a bit:
+```
+BenchmarkRangeDivisorsSearch/with_a_loop-8         	     220	   7315228 ns/op	 2917648 B/op	      28 allocs/op
+BenchmarkRangeDivisorsSearch/with_a_range-8        	      56	  21582156 ns/op	 2917696 B/op	      31 allocs/op
+BenchmarkVectorStringSearch/with_a_loop-8          	 1212097	      1023 ns/op	       0 B/op	       0 allocs/op
+BenchmarkVectorStringSearch/with_a_VectorOfInt-8   	  114975	      9202 ns/op	      32 B/op	       1 allocs/op
+```

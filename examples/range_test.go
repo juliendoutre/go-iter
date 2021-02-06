@@ -6,7 +6,7 @@ import (
 )
 
 func TestRangeFold(t *testing.T) {
-	testCases := map[*Iterator]int{
+	testCases := map[*IteratorForInt]int{
 		Range(0, 0, 0):   0,
 		Range(0, 1, 1):   0,
 		Range(0, 4, 1):   6,
@@ -16,9 +16,9 @@ func TestRangeFold(t *testing.T) {
 	}
 
 	for iter, want := range testCases {
-		got := iter.Fold(0, func(acc, item interface{}) interface{} {
-			return acc.(int) + item.(int)
-		}).(int)
+		got := iter.FoldForInt(0, func(acc, item int) int {
+			return acc + item
+		})
 
 		if got != want {
 			t.Errorf("case: %s;got: %d; expected: %d", iter, got, want)
@@ -27,18 +27,18 @@ func TestRangeFold(t *testing.T) {
 }
 
 func TestRangeFoldFirst(t *testing.T) {
-	testCases := map[*Iterator]interface{}{
-		Range(0, 0, 0):   nil,
-		Range(0, 1, 1):   0,
-		Range(0, 4, 1):   6,
-		Range(0, 5, 2):   6,
-		Range(0, -4, -1): -6,
-		Range(0, -5, -2): -6,
+	testCases := map[*IteratorForInt]OptionForInt{
+		Range(0, 0, 0):   NoneInt(),
+		Range(0, 1, 1):   SomeInt(0),
+		Range(0, 4, 1):   SomeInt(6),
+		Range(0, 5, 2):   SomeInt(6),
+		Range(0, -4, -1): SomeInt(-6),
+		Range(0, -5, -2): SomeInt(-6),
 	}
 
 	for iter, want := range testCases {
-		got := iter.FoldFirst(func(acc, item interface{}) interface{} {
-			return acc.(int) + item.(int)
+		got := iter.FoldFirst(func(acc, item int) int {
+			return acc + item
 		})
 
 		if !reflect.DeepEqual(got, want) {
@@ -48,7 +48,7 @@ func TestRangeFoldFirst(t *testing.T) {
 }
 
 func TestRangeForEach(t *testing.T) {
-	testCases := map[*Iterator]int{
+	testCases := map[*IteratorForInt]int{
 		Range(0, 0, 0):   0,
 		Range(0, 1, 1):   0,
 		Range(0, 4, 1):   6,
@@ -59,8 +59,8 @@ func TestRangeForEach(t *testing.T) {
 
 	for iter, want := range testCases {
 		got := 0
-		iter.ForEach(func(item interface{}) {
-			got += item.(int)
+		iter.ForEach(func(item int) {
+			got += item
 		})
 
 		if got != want {
@@ -70,7 +70,7 @@ func TestRangeForEach(t *testing.T) {
 }
 
 func TestRangeMapAndCollect(t *testing.T) {
-	testCases := map[*Iterator][]interface{}{
+	testCases := map[*IteratorForInt][]int{
 		Range(0, 0, 0):   {},
 		Range(0, 1, 1):   {0},
 		Range(0, 4, 1):   {0, 1, 4, 9},
@@ -80,8 +80,8 @@ func TestRangeMapAndCollect(t *testing.T) {
 	}
 
 	for iter, want := range testCases {
-		got := iter.Map(func(item interface{}) interface{} {
-			return item.(int) * item.(int)
+		got := iter.Map(func(item int) int {
+			return item * item
 		}).Collect()
 
 		if !reflect.DeepEqual(got, want) {
@@ -91,7 +91,7 @@ func TestRangeMapAndCollect(t *testing.T) {
 }
 
 func TestRangeCount(t *testing.T) {
-	testCases := map[*Iterator]uint{
+	testCases := map[*IteratorForInt]uint{
 		Range(0, 0, 0):   0,
 		Range(0, 1, 1):   1,
 		Range(0, 4, 1):   4,
@@ -110,13 +110,13 @@ func TestRangeCount(t *testing.T) {
 }
 
 func TestRangeLast(t *testing.T) {
-	testCases := map[*Iterator]interface{}{
-		Range(0, 0, 0):   nil,
-		Range(0, 1, 1):   0,
-		Range(0, 4, 1):   3,
-		Range(0, 5, 2):   4,
-		Range(0, -4, -1): -3,
-		Range(0, -5, -2): -4,
+	testCases := map[*IteratorForInt]OptionForInt{
+		Range(0, 0, 0):   NoneInt(),
+		Range(0, 1, 1):   SomeInt(0),
+		Range(0, 4, 1):   SomeInt(3),
+		Range(0, 5, 2):   SomeInt(4),
+		Range(0, -4, -1): SomeInt(-3),
+		Range(0, -5, -2): SomeInt(-4),
 	}
 
 	for iter, want := range testCases {
@@ -129,13 +129,13 @@ func TestRangeLast(t *testing.T) {
 }
 
 func TestRangeNth(t *testing.T) {
-	testCases := map[*Iterator]interface{}{
-		Range(0, 0, 0):   nil,
-		Range(0, 1, 1):   nil,
-		Range(0, 4, 1):   3,
-		Range(0, 5, 2):   nil,
-		Range(0, -4, -1): -3,
-		Range(0, -5, -2): nil,
+	testCases := map[*IteratorForInt]OptionForInt{
+		Range(0, 0, 0):   NoneInt(),
+		Range(0, 1, 1):   NoneInt(),
+		Range(0, 4, 1):   SomeInt(3),
+		Range(0, 5, 2):   NoneInt(),
+		Range(0, -4, -1): SomeInt(-3),
+		Range(0, -5, -2): NoneInt(),
 	}
 
 	for iter, want := range testCases {
@@ -148,7 +148,7 @@ func TestRangeNth(t *testing.T) {
 }
 
 func TestRangeAll(t *testing.T) {
-	testCases := map[*Iterator]bool{
+	testCases := map[*IteratorForInt]bool{
 		Range(0, 0, 0):   true,
 		Range(0, 1, 1):   true,
 		Range(0, 4, 1):   true,
@@ -158,8 +158,8 @@ func TestRangeAll(t *testing.T) {
 	}
 
 	for iter, want := range testCases {
-		got := iter.All(func(item interface{}) bool {
-			return item.(int) >= 0
+		got := iter.All(func(item int) bool {
+			return item >= 0
 		})
 
 		if !reflect.DeepEqual(got, want) {
@@ -169,7 +169,7 @@ func TestRangeAll(t *testing.T) {
 }
 
 func TestRangeAny(t *testing.T) {
-	testCases := map[*Iterator]bool{
+	testCases := map[*IteratorForInt]bool{
 		Range(0, 0, 0):   false,
 		Range(0, 1, 1):   false,
 		Range(0, 4, 1):   false,
@@ -179,8 +179,8 @@ func TestRangeAny(t *testing.T) {
 	}
 
 	for iter, want := range testCases {
-		got := iter.Any(func(item interface{}) bool {
-			return item.(int) < 0
+		got := iter.Any(func(item int) bool {
+			return item < 0
 		})
 
 		if !reflect.DeepEqual(got, want) {
@@ -190,17 +190,17 @@ func TestRangeAny(t *testing.T) {
 }
 
 func TestRangeFind(t *testing.T) {
-	testCases := map[*Iterator]interface{}{
-		Range(0, 0, 0):   nil,
-		Range(0, 1, 1):   nil,
-		Range(0, 4, 1):   nil,
-		Range(0, 5, 2):   nil,
-		Range(0, -4, -1): -1,
-		Range(0, -5, -2): -2,
+	testCases := map[*IteratorForInt]OptionForInt{
+		Range(0, 0, 0):   NoneInt(),
+		Range(0, 1, 1):   NoneInt(),
+		Range(0, 4, 1):   NoneInt(),
+		Range(0, 5, 2):   NoneInt(),
+		Range(0, -4, -1): SomeInt(-1),
+		Range(0, -5, -2): SomeInt(-2),
 	}
 	for iter, want := range testCases {
-		got := iter.Find(func(item interface{}) bool {
-			return item.(int) < 0
+		got := iter.Find(func(item int) bool {
+			return item < 0
 		})
 
 		if !reflect.DeepEqual(got, want) {
@@ -210,18 +210,18 @@ func TestRangeFind(t *testing.T) {
 }
 
 func TestRangePosition(t *testing.T) {
-	testCases := map[*Iterator]interface{}{
-		Range(0, 0, 0):   nil,
-		Range(0, 1, 1):   nil,
-		Range(0, 4, 1):   nil,
-		Range(0, 5, 2):   nil,
-		Range(0, -4, -1): uint(1),
-		Range(0, -5, -2): uint(1),
+	testCases := map[*IteratorForInt]OptionForUint{
+		Range(0, 0, 0):   NoneUint(),
+		Range(0, 1, 1):   NoneUint(),
+		Range(0, 4, 1):   NoneUint(),
+		Range(0, 5, 2):   NoneUint(),
+		Range(0, -4, -1): SomeUint(1),
+		Range(0, -5, -2): SomeUint(1),
 	}
 
 	for iter, want := range testCases {
-		got := iter.Position(func(item interface{}) bool {
-			return item.(int) < 0
+		got := iter.Position(func(item int) bool {
+			return item < 0
 		})
 
 		if !reflect.DeepEqual(got, want) {
@@ -231,18 +231,18 @@ func TestRangePosition(t *testing.T) {
 }
 
 func TestRangeSkipWhile(t *testing.T) {
-	testCases := map[*Iterator]interface{}{
-		Range(0, 0, 0):   nil,
-		Range(0, 1, 1):   nil,
-		Range(0, 4, 1):   nil,
-		Range(0, 5, 2):   nil,
-		Range(0, -4, -1): -2,
-		Range(0, -5, -2): -4,
+	testCases := map[*IteratorForInt]OptionForInt{
+		Range(0, 0, 0):   NoneInt(),
+		Range(0, 1, 1):   NoneInt(),
+		Range(0, 4, 1):   NoneInt(),
+		Range(0, 5, 2):   NoneInt(),
+		Range(0, -4, -1): SomeInt(-2),
+		Range(0, -5, -2): SomeInt(-4),
 	}
 
 	for iter, want := range testCases {
-		got := iter.SkipWhile(func(item interface{}) bool {
-			return item.(int) < 0
+		got := iter.SkipWhile(func(item int) bool {
+			return item < 0
 		}).Next()
 
 		if !reflect.DeepEqual(got, want) {
@@ -252,13 +252,13 @@ func TestRangeSkipWhile(t *testing.T) {
 }
 
 func TestRangeSkip(t *testing.T) {
-	testCases := map[*Iterator]interface{}{
-		Range(0, 0, 0):   nil,
-		Range(0, 1, 1):   nil,
-		Range(0, 4, 1):   2,
-		Range(0, 5, 2):   4,
-		Range(0, -4, -1): -2,
-		Range(0, -5, -2): -4,
+	testCases := map[*IteratorForInt]OptionForInt{
+		Range(0, 0, 0):   NoneInt(),
+		Range(0, 1, 1):   NoneInt(),
+		Range(0, 4, 1):   SomeInt(2),
+		Range(0, 5, 2):   SomeInt(4),
+		Range(0, -4, -1): SomeInt(-2),
+		Range(0, -5, -2): SomeInt(-4),
 	}
 
 	for iter, want := range testCases {
@@ -271,7 +271,7 @@ func TestRangeSkip(t *testing.T) {
 }
 
 func TestRangeFilter(t *testing.T) {
-	testCases := map[*Iterator][]interface{}{
+	testCases := map[*IteratorForInt][]int{
 		Range(0, 0, 0):   {},
 		Range(0, 1, 1):   {},
 		Range(0, 4, 1):   {},
@@ -281,8 +281,8 @@ func TestRangeFilter(t *testing.T) {
 	}
 
 	for iter, want := range testCases {
-		got := iter.Filter(func(item interface{}) bool {
-			return item.(int) < 0
+		got := iter.Filter(func(item int) bool {
+			return item < 0
 		}).Collect()
 
 		if !reflect.DeepEqual(got, want) {
@@ -291,27 +291,8 @@ func TestRangeFilter(t *testing.T) {
 	}
 }
 
-func TestRangeEnumerate(t *testing.T) {
-	testCases := map[*Iterator][]interface{}{
-		Range(0, 0, 0):   {},
-		Range(0, 1, 1):   {Enumeration{0, 0}},
-		Range(0, 4, 1):   {Enumeration{0, 0}, Enumeration{1, 1}, Enumeration{2, 2}, Enumeration{3, 3}},
-		Range(0, 5, 2):   {Enumeration{0, 0}, Enumeration{1, 2}, Enumeration{2, 4}},
-		Range(0, -4, -1): {Enumeration{0, 0}, Enumeration{1, -1}, Enumeration{2, -2}, Enumeration{3, -3}},
-		Range(0, -5, -2): {Enumeration{0, 0}, Enumeration{1, -2}, Enumeration{2, -4}},
-	}
-
-	for iter, want := range testCases {
-		got := iter.Enumerate().Collect()
-
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("case: %s;got: %v; expected: %v", iter, got, want)
-		}
-	}
-}
-
 func TestRangeTakeWhile(t *testing.T) {
-	testCases := map[*Iterator][]interface{}{
+	testCases := map[*IteratorForInt][]int{
 		Range(0, 0, 0):   {},
 		Range(0, 1, 1):   {0},
 		Range(0, 4, 1):   {0, 1, 2, 3},
@@ -321,8 +302,8 @@ func TestRangeTakeWhile(t *testing.T) {
 	}
 
 	for iter, want := range testCases {
-		got := iter.TakeWhile(func(item interface{}) bool {
-			return item.(int) >= 0
+		got := iter.TakeWhile(func(item int) bool {
+			return item >= 0
 		}).Collect()
 
 		if !reflect.DeepEqual(got, want) {
@@ -332,7 +313,7 @@ func TestRangeTakeWhile(t *testing.T) {
 }
 
 func TestRangeTake(t *testing.T) {
-	testCases := map[*Iterator][]interface{}{
+	testCases := map[*IteratorForInt][]int{
 		Range(0, 0, 0):   {},
 		Range(0, 1, 1):   {0},
 		Range(0, 4, 1):   {0, 1, 2},
@@ -351,7 +332,7 @@ func TestRangeTake(t *testing.T) {
 }
 
 func TestRangeChain(t *testing.T) {
-	testCases := map[*Iterator][]interface{}{
+	testCases := map[*IteratorForInt][]int{
 		Range(0, 0, 0):   {-1, 0},
 		Range(0, 1, 1):   {-1, 0, 0},
 		Range(0, 4, 1):   {-1, 0, 0, 1, 2, 3},
@@ -362,25 +343,6 @@ func TestRangeChain(t *testing.T) {
 
 	for iter, want := range testCases {
 		got := Range(-1, 1, 1).Chain(iter).Collect()
-
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("case: %s;got: %v; expected: %v", iter, got, want)
-		}
-	}
-}
-
-func TestRangeZip(t *testing.T) {
-	testCases := map[*Iterator][]interface{}{
-		Range(0, 0, 0):   {},
-		Range(0, 1, 1):   {Pair{-1, 0}},
-		Range(0, 4, 1):   {Pair{-1, 0}, Pair{0, 1}},
-		Range(0, 5, 2):   {Pair{-1, 0}, Pair{0, 2}},
-		Range(0, -4, -1): {Pair{-1, 0}, Pair{0, -1}},
-		Range(0, -5, -2): {Pair{-1, 0}, Pair{0, -2}},
-	}
-
-	for iter, want := range testCases {
-		got := Range(-1, 1, 1).Zip(iter).Collect()
 
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("case: %s;got: %v; expected: %v", iter, got, want)
@@ -404,8 +366,8 @@ func BenchmarkRangeDivisorsSearch(b *testing.B) {
 
 	b.Run("with a range", func(b *testing.B) {
 		for k := 0; k < b.N; k++ {
-			Range(0, 1_000_000, 1).Filter(func(item interface{}) bool {
-				return item.(int)%14 == 0
+			Range(0, 1_000_000, 1).Filter(func(item int) bool {
+				return item%14 == 0
 			}).Collect()
 		}
 	})

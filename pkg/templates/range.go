@@ -1,9 +1,9 @@
-package iter
+package templates
 
 // Range builds an Iterator from a range of integers.
 // The range start is inclusive but its end is exclusive.
-func Range(start, end, step int) *Iterator {
-	return &Iterator{
+func Range(start, end, step int) *IteratorForInt {
+	return &IteratorForInt{
 		iter: &rangeIterable{index: start, end: end, step: step},
 	}
 }
@@ -14,15 +14,15 @@ type rangeIterable struct {
 	step  int
 }
 
-func (r *rangeIterable) Next() interface{} {
+func (r *rangeIterable) Next() OptionForInt {
 	if (r.index-r.end)*r.step >= 0 {
-		return nil
+		return NoneInt()
 	}
 
 	item := r.index
 	r.index += r.step
 
-	return item
+	return SomeInt(item)
 }
 
-var _ Iterable = &rangeIterable{}
+var _ IterableForInt = &rangeIterable{}
